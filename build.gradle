@@ -24,11 +24,13 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	implementation "com.discord4j:discord4j-core:3.2.6"
 	implementation files('mad4j-0.0.5-plain.jar')
+	implementation 'org.jetbrains:annotations:24.0.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
