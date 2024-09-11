@@ -65,21 +65,21 @@ public class Dude implements Comparable<Dude> {
     @Singular
     private List<ElementalType> types;
 
-    /**
-     * The type this dude is resistant to. Null if none.
-     */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(value = EnumType.STRING)
-    @Singular
-    private List<ElementalType> resistances;
-
-    /**
-     * The type this dude is weak to. Null if none.
-     */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(value = EnumType.STRING)
-    @Singular
-    private List<ElementalType> weaknesses;
+//    /**
+//     * The type this dude is resistant to. Null if none.
+//     */
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Enumerated(value = EnumType.STRING)
+//    @Singular
+//    private List<ElementalType> resistances;
+//
+//    /**
+//     * The type this dude is weak to. Null if none.
+//     */
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Enumerated(value = EnumType.STRING)
+//    @Singular
+//    private List<ElementalType> weaknesses;
 
     /**
      * The health of the dude.
@@ -135,22 +135,22 @@ public class Dude implements Comparable<Dude> {
     @ManyToMany(fetch = FetchType.EAGER)
     @Singular
     private List<Move> moves;
-
-    /**
-     * The traits the dude has.
-     */
-    @ManyToMany(fetch = FetchType.EAGER)
-    @Singular
-    private List<Trait> traits;
-
-    /**
-     * The ids of the discord channels you can acquire this dude in. Empty
-     * means it can appear in any.
-     */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Singular
-    //@Getter(AccessLevel.NONE)
-    private List<Long> locations;
+//
+//    /**
+//     * The traits the dude has.
+//     */
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @Singular
+//    private List<Trait> traits;
+//
+//    /**
+//     * The ids of the discord channels you can acquire this dude in. Empty
+//     * means it can appear in any.
+//     */
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Singular
+//    //@Getter(AccessLevel.NONE)
+//    private List<Long> locations;
 
 //    public List<Long> getLocations() {
 //        Hibernate.initialize(this.locations);

@@ -38,8 +38,10 @@ public class Move {
     private List<ElementalType> types = new ArrayList<>();
 
     /**
-     * The energy cost of using the move.
+     * The dudes that have this move.
      */
-    @Column(nullable = false)
-    private int energy;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Singular("owningDude")
+    private List<Dude> dudesThatHave;
+
 }

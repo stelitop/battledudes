@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.github.stelitop.battledudes.database.repositories.DudeRepository;
 import io.github.stelitop.battledudes.database.repositories.MoveRepository;
-import io.github.stelitop.battledudes.database.repositories.TraitsRepository;
 import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.enums.Rarity;
 
@@ -20,8 +19,6 @@ public class DudeService {
     private DudeRepository dudeRepository;
     @Autowired
     private MoveRepository moveRepository;
-    @Autowired
-    private TraitsRepository traitsRepository;
 
     /**
      * Finds a dude in the repository by their unique name.
@@ -33,7 +30,7 @@ public class DudeService {
     public Optional<Dude> getDude(String name) {
         var options = dudeRepository.findByNameIgnoreCase(name);
         if (options == null || options.isEmpty()) return Optional.empty();
-        System.out.println(options.get(0).getName() + " retrieved with " + options.get(0).getLocations().size() + " locations.");
+        //System.out.println(options.get(0).getName() + " retrieved with " + options.get(0).getLocations().size() + " locations.");
         return Optional.of(options.get(0));
     }
 
@@ -45,8 +42,8 @@ public class DudeService {
      */
     public Optional<Dude> getDude(long id) {
         var ret = dudeRepository.findById(id);
-        ret.ifPresent(dude -> dude.setLocations(new ArrayList<>(dude.getLocations().stream().distinct().toList())));
-        ret.ifPresent(dude -> System.out.println(dude.getName() + " retrieved with " + dude.getLocations().size() + " locations."));
+        //ret.ifPresent(dude -> dude.setLocations(new ArrayList<>(dude.getLocations().stream().distinct().toList())));
+        //ret.ifPresent(dude -> System.out.println(dude.getName() + " retrieved with " + dude.getLocations().size() + " locations."));
         return ret;
     }
 
@@ -57,8 +54,8 @@ public class DudeService {
      * @param dude Dude to save.
      */
     public void saveDudeWithMovesAndTraits(Dude dude) {
-        moveRepository.saveAll(dude.getMoves());
-        traitsRepository.saveAll(dude.getTraits());
+        //moveRepository.saveAll(dude.getMoves());
+        //traitsRepository.saveAll(dude.getTraits());
         dudeRepository.save(dude);
     }
 
@@ -80,7 +77,7 @@ public class DudeService {
     public List<Dude> getAllDudes() {
         List<Dude> dudes = new ArrayList<>();
         dudeRepository.findAll().forEach(dudes::add);
-        dudes.forEach(x -> x.setLocations(new ArrayList<>(x.getLocations().stream().distinct().toList())));
+        //dudes.forEach(x -> x.setLocations(new ArrayList<>(x.getLocations().stream().distinct().toList())));
         return dudes;
     }
 
@@ -90,8 +87,8 @@ public class DudeService {
      * @param dude Dude to save.
      */
     public void saveDude(Dude dude) {
-        System.out.println(dude.getName() + " saved with " + dude.getLocations().size() + " locations.");
-        dude.setLocations(dude.getLocations().stream().distinct().toList());
+        //System.out.println(dude.getName() + " saved with " + dude.getLocations().size() + " locations.");
+        //dude.setLocations(dude.getLocations().stream().distinct().toList());
         dudeRepository.save(dude);
     }
 }

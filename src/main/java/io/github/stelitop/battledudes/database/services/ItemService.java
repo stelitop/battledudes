@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import io.github.stelitop.battledudes.database.repositories.DudeRepository;
 import io.github.stelitop.battledudes.database.repositories.ItemRepository;
 import io.github.stelitop.battledudes.database.repositories.MoveRepository;
-import io.github.stelitop.battledudes.database.repositories.TraitsRepository;
 import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.entities.Item;
 import io.github.stelitop.battledudes.game.enums.Rarity;
