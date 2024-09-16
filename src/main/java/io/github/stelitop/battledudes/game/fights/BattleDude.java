@@ -3,6 +3,7 @@ package io.github.stelitop.battledudes.game.fights;
 import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.enums.ElementalType;
 import lombok.Data;
+import lombok.Singular;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class BattleDude {
     /**
      * The moves of the dude.
      */
+    @Singular
     private List<BattleMove> moves;
 
 
@@ -82,7 +84,8 @@ public class BattleDude {
         this.artLink = dbDude.getArtLink();
         this.types = new ArrayList<>(dbDude.getTypes());
         this.item = null;
-        this.moves = new ArrayList<>(dbDude.getMoves().stream().map(BattleMove::new).toList());
+        //this.moves = new ArrayList<>(dbDude.getMoves().stream().map(BattleMove::new).toList());
+        this.moves = new ArrayList<>();
     }
 
     public boolean isAlive() {

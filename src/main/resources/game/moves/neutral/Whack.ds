@@ -1,0 +1,10 @@
+meta name = "Whack";
+meta text = "Deal 40 damage.";
+meta element = neutral;
+meta style = melee;
+meta accuracy = 100;
+meta charges = 40;
+
+trigger onUse += {
+    action damage 40;
+};

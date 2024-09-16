@@ -51,4 +51,17 @@ class ParserTest {
     val result = Parser.parse(tokenized)
     println(result)
   }
+
+  @Test
+  def parseCommaSeparatedArgsInAction(): Unit = {
+    val code =
+      """
+      action params 1, 2, 3, 100;
+      """
+    println(code)
+    val tokenized = Lexer.tokenize(code.toCharArray.toList)
+    println(tokenized)
+    val result = Parser.parse(tokenized)
+    println(result)
+  }
 }

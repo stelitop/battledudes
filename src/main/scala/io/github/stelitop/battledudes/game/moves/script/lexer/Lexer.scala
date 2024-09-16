@@ -3,6 +3,8 @@ package io.github.stelitop.battledudes.game.moves.script.lexer
 import io.github.stelitop.battledudes.game.moves.script.ScriptSpecs
 
 object Lexer {
+
+  def tokenize(text: String): List[Token] = tokenize(text.toCharArray.toList)
   def tokenize(text: List[Char]): List[Token] = text match {
     case Nil => List()
     case c :: _ if ScriptSpecs.digitChars.contains(c) =>

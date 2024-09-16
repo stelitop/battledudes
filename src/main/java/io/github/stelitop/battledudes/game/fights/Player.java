@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,7 +29,7 @@ public class Player {
      * Placeholder, should be created from a Team database object that currently doesn't exist.
      */
     public Player() {
-
+        dudes = new ArrayList<>();
     }
 
     /**
@@ -42,6 +43,13 @@ public class Player {
         if (selectedDude == null) return false;
         if (idx < 0 || selectedDude.getMoves().size() <= idx) return false;
         selectedMove = selectedDude.getMoves().get(idx);
+        return true;
+    }
+
+    public boolean selectDude(int idx) {
+        if (idx < 0 || dudes.size() <= idx) return false;
+        selectedDude = dudes.get(idx);
+        selectedMove = null;
         return true;
     }
 }
