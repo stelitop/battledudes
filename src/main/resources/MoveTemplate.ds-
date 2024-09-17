@@ -1,0 +1,11 @@
+meta name = "";
+meta text = "";
+meta element = neutral/fire/water/earth/air/magic/tech/nature/decay;
+meta style = melee/ranged/special;
+meta accuracy = 100;
+meta charges = 40;
+
+trigger onUse += {
+    action damage (0);
+    action applyStatusOpponent (100, "Burning", 3);
+};

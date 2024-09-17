@@ -29,7 +29,10 @@ object Parser {
     val (part, leftover) = getNextPart(tokens)
     leftover match {
       case Nil => part
-      case SpecialCharT(',') :: rest => BinOpP(",", part, parseSingleExpression(rest))
+      case SpecialCharT(',') :: rest => parseSingleExpression(rest) match {
+        case TupleP(exprs) => TupleP(part :: exprs)
+        case x => TupleP(part :: x :: Nil)
+      }
       case OperatorT(op) :: rest if arithOps.contains(op) || boolOps.contains(op) => BinOpP(op, part, parseSingleExpression(rest))
       case _ => throw new RuntimeException(s"Leftover found unparsed! \"${leftover}\"")
     }
@@ -56,7 +59,9 @@ object Parser {
     case KeywordT("meta") :: NameT(name) :: OperatorT("=") :: rest => (MetaP(name, parseSingleExpression(rest)), Nil)
     case KeywordT("action") :: NameT(name) :: rest => (ActionP(name, parseSingleExpression(rest)), Nil)
     case KeywordT("trigger") :: NameT(name) :: OperatorT("+=") :: rest => (TriggerP(name, parseSingleExpression(rest)), Nil)
+    case KeywordT("random") :: NumberT(chance) :: rest => (RandomP(chance, parseSingleExpression(rest)), Nil)
     case NameT(s) :: OperatorT("=") :: rest => (PutP(s, parseSingleExpression(rest)), Nil)
     case NameT(s) :: rest => (GetP(s), rest)
+    case _ => throw new RuntimeException(s"Could not parse the following: ${tokens}")
   }
 }

@@ -1,4 +1,4 @@
-package io.github.stelitop.battledudes.game.fights;
+package io.github.stelitop.battledudes.game.battles;
 
 import lombok.AccessLevel;
 import lombok.Data;

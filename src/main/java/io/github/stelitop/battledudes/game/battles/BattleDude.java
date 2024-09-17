@@ -1,13 +1,16 @@
-package io.github.stelitop.battledudes.game.fights;
+package io.github.stelitop.battledudes.game.battles;
 
 import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.enums.ElementalType;
+import io.github.stelitop.battledudes.game.enums.StatusEffect;
 import lombok.Data;
 import lombok.Singular;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class BattleDude {
@@ -68,6 +71,11 @@ public class BattleDude {
     @Singular
     private List<BattleMove> moves;
 
+    /**
+     * The statuses that are applied to the dude.
+     */
+    private Map<StatusEffect, Integer> statusEffects;
+
 
     /**
      * Creates a fight dude instance from the data of a dude from the database.
@@ -86,9 +94,15 @@ public class BattleDude {
         this.item = null;
         //this.moves = new ArrayList<>(dbDude.getMoves().stream().map(BattleMove::new).toList());
         this.moves = new ArrayList<>();
+        this.statusEffects = new HashMap<>();
     }
 
     public boolean isAlive() {
         return health > 0;
+    }
+
+    public int applyStatus(StatusEffect status, int amount) {
+        statusEffects.put(status, statusEffects.getOrDefault(status, 0) + amount);
+        return statusEffects.get(status);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.stelitop.battledudes.game.fights;
+package io.github.stelitop.battledudes.game.battles;
 
 import io.github.stelitop.battledudes.game.entities.Item;
 

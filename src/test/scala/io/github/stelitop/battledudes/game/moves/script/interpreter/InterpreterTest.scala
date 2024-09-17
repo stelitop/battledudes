@@ -1,6 +1,6 @@
 package io.github.stelitop.battledudes.game.moves.script.interpreter;
 
-import io.github.stelitop.battledudes.game.fights.BattleActions
+import io.github.stelitop.battledudes.game.battles.BattleActions
 import io.github.stelitop.battledudes.game.moves.script.desugarer.Desugarer
 import io.github.stelitop.battledudes.game.moves.script.interpreter.Interpreter.MoveData
 import io.github.stelitop.battledudes.game.moves.script.lexer.Lexer

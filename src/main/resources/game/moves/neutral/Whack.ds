@@ -6,5 +6,5 @@ meta accuracy = 100;
 meta charges = 40;
 
 trigger onUse += {
-    action damage 40;
+    action damage (40);
 };

@@ -1,0 +1,10 @@
+meta name = "Demise";
+meta text = "Give the enemy Perishing for 4 turns.";
+meta element = decay;
+meta style = special;
+meta accuracy = 60;
+meta charges = 5;
+
+trigger onUse += {
+    action applyStatusOpponent (100, "Perishing", 4);
+};

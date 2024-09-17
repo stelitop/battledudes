@@ -1,8 +1,10 @@
 package io.github.stelitop.battledudes.game.moves.script.interpreter
 
-import io.github.stelitop.battledudes.game.fights._
+import io.github.stelitop.battledudes.game.battles._
 import io.github.stelitop.battledudes.game.moves.script.ScriptSpecs
-import io.github.stelitop.battledudes.game.moves.script.desugarer._;
+import io.github.stelitop.battledudes.game.moves.script.desugarer._
+
+import java.util.concurrent.ThreadLocalRandom;
 
 object Interpreter {
 
@@ -19,17 +21,62 @@ object Interpreter {
 
   def interpNew(expr: ExprC, moveData: MoveData) = interp(expr, Nil, moveData)
   def interp(expr: ExprC, bindings: List[Binding], moveData: MoveData): (Value, List[Binding]) = expr match {
+    // Constant Values //
     case NullC() => (NullV(), bindings)
     case StringC(s) => (StringV(s), bindings)
     case NumberC(n) => (NumberV(n), bindings)
     case BoolC(b) => (BoolV(b), bindings)
+    // TODO: Yes this is technically incorrect because it should chain bindings but cba to do it right now.
+    case TupleC(exprs) => (TupleV(exprs.map(e => interp(e, bindings, moveData)._1)), bindings)
     case ElementalTypeC(t) => (ElementalTypeV(t), bindings)
     case MoveStyleC(st) => (MoveStyleV(st), bindings)
+
+    // Arithmetic Operators //
+    case AddC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (NumberV(l + r), newBindings)
+      case _ => throw new RuntimeException("Tried adding two non-numbers!")
+    }
+    case MultC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (NumberV(l * r), newBindings)
+      case _ => throw new RuntimeException("Tried multiplying two non-numbers!")
+    }
+    case DivC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (NumberV(l / r), newBindings)
+      case _ => throw new RuntimeException("Tried dividing two non-numbers!")
+    }
+    case LtC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (BoolV(l < r), newBindings)
+      case _ => throw new RuntimeException("Tried comparing two non-numbers!")
+    }
+    case LtEC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (BoolV(l <= r), newBindings)
+      case _ => throw new RuntimeException("Tried comparing two non-numbers!")
+    }
+    case EqC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (NumberV(l), NumberV(r), newBindings) => (BoolV(l == r), newBindings)
+      case (BoolV(l), BoolV(r), newBindings) => (BoolV(l == r), newBindings)
+      case (StringV(l), StringV(r), newBindings) => (BoolV(l == r), newBindings)
+      case (ElementalTypeV(l), ElementalTypeV(r), newBindings) => (BoolV(l == r), newBindings)
+      case (MoveStyleV(l), MoveStyleV(r), newBindings) => (BoolV(l == r), newBindings)
+      case _ => throw new RuntimeException("Tried checking if two values of different types are equal!")
+    }
+    case AndC(left, right) => binOpHelper(left, right, bindings, moveData) match {
+      case (BoolV(l), BoolV(r), newBindings) => (BoolV(l && r), newBindings)
+      case _ => throw new RuntimeException("Used binary operation on non-binary values!")
+    }
+    case NotC(b) => {
+      val (v, newBindings) = interp(b, bindings, moveData)
+      v match {
+        case BoolV(bool) => (BoolV(!bool), newBindings)
+        case _ => throw new RuntimeException("Used binary operation on a non-binary value!")
+      }
+    }
+
+    // Other Stuff //
     case PutC(name, value) =>
       val (v, binding2) = interp(value, bindings,moveData)
       (v, (name, v) :: binding2)
     case GetC(name) => (getBinding(name, bindings), bindings)
-    case BinOpC(op, left, right) => ???
     case SeqC(exprs) => exprs.foldLeft((NullV(), bindings): (Value, List[Binding]))((cum, x) => interp(x, cum._2, moveData))
     case ClosureC(e) => (interp(e, bindings, moveData)._1, bindings)
     case m@MetaC(_, _) => interpMeta(m, bindings, moveData)
@@ -37,30 +84,35 @@ object Interpreter {
     case TriggerC(name, value) if ScriptSpecs.moveTriggers.contains(name) =>
       moveData.move.addTrigger(ScriptSpecs.moveTriggers(name), value)
       (NullV(), bindings)
+    case RandomC(chance, expr) =>
+      val x = ThreadLocalRandom.current().nextInt(100)
+      println(x)
+      if (x < chance) {
+        println(expr)
+        val (_, newBindings) = interp(expr, bindings, moveData)
+        (BoolV(true), newBindings)
+      } else {
+        (BoolV(false), bindings)
+      }
+
+    case _ => throw new RuntimeException(s"Could not interpret the following: ${expr}")
   }
 
-  private def getBinding(name: String, bindings: List[Binding]): Value = bindings match {
-    case Nil => throw new RuntimeException(s"Unbinded variable \"${name}\"!")
-    case (n, v) :: _ if (n == name) => v
-    case _ :: rest => getBinding(name, rest)
-  }
-
-  //private final val existingActions = List("damage")
   private def interpAction(a: ActionC, bindings: List[Binding], moveData: MoveData): (Value, List[Binding]) = {
-    //if (!existingActions.contains(a.name)) throw new RuntimeException(s"Illegal action name \"${a.name}\" found!")
-    val (v, bindings2) = interp(a.value, bindings, moveData)
+    val (v, bindings2) = interp(a.expr, bindings, moveData)
     (a.name, v) match {
       case ("damage", NumberV(x)) =>
         val realDmg = moveData.battleActions.dealDamage(moveData.battle, moveData.dude, moveData.target, x, moveData.move.getElementalType)
         (NumberV(realDmg), bindings2)
+      case ("applyStatusOpponent", TupleV(StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatusOpponent(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
+        (NumberV(newStatus), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for action \"${a.name}\"")
     }
   }
 
-  //private final val existingMetaVals = List("name")
   private def interpMeta(m: MetaC, bindings: List[Binding], moveData: MoveData): (Value, List[Binding]) = {
-    //if (!existingMetaVals.contains(m.name)) throw new RuntimeException(s"Illegal meta name \"${m.name}\" found!")
-    val (v, bindings2) = interp(m.value, bindings, moveData)
+    val (v, bindings2) = interp(m.expr, bindings, moveData)
     (m.name, v) match {
       case ("name", StringV(s)) =>
         moveData.move.setName(s)
@@ -82,5 +134,17 @@ object Interpreter {
         (NullV(), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for meta \"${m.name}\"")
     }
+  }
+
+  private def getBinding(name: String, bindings: List[Binding]): Value = bindings match {
+    case Nil => throw new RuntimeException(s"Unbinded variable \"${name}\"!")
+    case (n, v) :: _ if (n == name) => v
+    case _ :: rest => getBinding(name, rest)
+  }
+
+  private def binOpHelper(left: ExprC, right: ExprC, bindings: List[Binding], moveData: MoveData): (Value, Value, List[Binding]) = {
+    val (l, b2) = interp(left, bindings, moveData)
+    val (r, b3) = interp(right, b2, moveData)
+    (l, r, b3)
   }
 }

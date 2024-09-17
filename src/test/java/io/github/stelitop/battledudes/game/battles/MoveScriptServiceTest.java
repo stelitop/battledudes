@@ -1,22 +1,17 @@
-package io.github.stelitop.battledudes.game.fights;
+package io.github.stelitop.battledudes.game.battles;
 
 import io.github.stelitop.battledudes.game.enums.ElementalType;
 import io.github.stelitop.battledudes.game.enums.MoveStyle;
-import io.github.stelitop.battledudes.game.moves.script.desugarer.MoveStyleC;
 import io.github.stelitop.battledudes.game.moves.script.desugarer.NullC;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +51,7 @@ class MoveScriptServiceTest {
     }
 
     @Test
-    void verifyAllDudeScriptFilesCanBeLoaded() throws URISyntaxException, FileNotFoundException {
+    void verifyAllDudeScriptFilesCanBeLoaded() throws URISyntaxException {
         List<String> wrongMsgs = new ArrayList<>();
         for (String el : List.of("neutral", "fire", "water", "earth", "air", "magic", "decay", "nature", "tech")) {
             File[] files = new File(this.getClass().getClassLoader().getResource("./game/moves/" + el).toURI()).listFiles();
