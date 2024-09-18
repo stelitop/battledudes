@@ -17,6 +17,8 @@ case class BinOpP(op: String, left: ExprP, right: ExprP) extends ExprP
 case class TupleP(args: List[ExprP]) extends ExprP
 case class SeqP(exprs: List[ExprP]) extends ExprP
 case class ClosureP(e: ExprP) extends ExprP
+case class IfP(cond: ExprP, t: ExprP, f: ExprP) extends ExprP
+case class RepeatP(minAmount: Int, maxAmount: Int, expr: ExprP) extends ExprP
 
 case class MetaP(name: String, value: ExprP) extends ExprP
 case class ActionP(name: String, value: ExprP) extends ExprP

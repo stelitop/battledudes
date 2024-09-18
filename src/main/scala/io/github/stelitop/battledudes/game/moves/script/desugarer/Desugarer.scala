@@ -14,9 +14,13 @@ object Desugarer {
     case PutP(name, value) => PutC(name, desugar(value))
     case GetP(name) => GetC(name)
     case b@BinOpP(_, _, _) => desugarBinOp(b)
+
     case SeqP(exprs) => SeqC(exprs.map(desugar))
     case TupleP(exprs) => TupleC(exprs.map(desugar))
     case ClosureP(e) => ClosureC(desugar(e))
+    case IfP(b, t, f) => IfC(desugar(b), desugar(t), desugar(f))
+    case RepeatP(minAmount, maxAmount, expr) => RepeatC(minAmount, maxAmount, desugar(expr))
+
     case MetaP(name, expr) => MetaC(name, desugar(expr))
     case ActionP(name, expr) => ActionC(name, desugar(expr))
     case TriggerP(name, expr) => TriggerC(name, desugar(expr))
