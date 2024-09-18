@@ -1,0 +1,11 @@
+meta name = "Shelter";
+meta text = "Give each Dude Sheltered for 5 turns.";
+meta element = earth;
+meta style = special;
+meta accuracy = 100;
+meta charges = 5;
+
+trigger onUse += {
+	action applyStatusSelf ("Sheltered", 5);
+	action applyStatusOpponent ("Sheltered", 5);
+};
