@@ -25,6 +25,8 @@ case class GetC(name: String) extends ExprC // gets the value of a variable
 case class SeqC(exprs: List[ExprC]) extends ExprC
 case class TupleC(exprs: List[ExprC]) extends ExprC
 case class ClosureC(e: ExprC) extends ExprC
+case class IfC(b: ExprC, t: ExprC, f:ExprC) extends ExprC
+case class RepeatC(minAmount: Int, maxAmount: Int, expr :ExprC) extends ExprC
 
 case class MetaC(name: String, expr: ExprC) extends ExprC
 case class ActionC(name: String, expr: ExprC) extends ExprC

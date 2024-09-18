@@ -60,6 +60,13 @@ object Parser {
     case KeywordT("action") :: NameT(name) :: rest => (ActionP(name, parseSingleExpression(rest)), Nil)
     case KeywordT("trigger") :: NameT(name) :: OperatorT("+=") :: rest => (TriggerP(name, parseSingleExpression(rest)), Nil)
     case KeywordT("random") :: NumberT(chance) :: rest => (RandomP(chance, parseSingleExpression(rest)), Nil)
+    case KeywordT("if") :: rest =>
+      val (b, rest1) = getNextPart(rest)
+      val (t, rest2) = getNextPart(rest1)
+      val (f, rest3) = getNextPart(rest2)
+      (IfP(b, t, f), rest3)
+    case KeywordT("repeat") :: NumberT(mn) :: NumberT(mx) :: rest => (RepeatP(mn, mx, parseSingleExpression(rest)), Nil)
+    case KeywordT("repeat") :: NumberT(amount) :: rest => (RepeatP(amount, amount, parseSingleExpression(rest)), Nil)
     case NameT(s) :: OperatorT("=") :: rest => (PutP(s, parseSingleExpression(rest)), Nil)
     case NameT(s) :: rest => (GetP(s), rest)
     case _ => throw new RuntimeException(s"Could not parse the following: ${tokens}")

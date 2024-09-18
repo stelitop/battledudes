@@ -80,6 +80,19 @@ object Interpreter {
     case GetC(name) => (getBinding(name, bindings), bindings)
     case SeqC(exprs) => exprs.foldLeft((NullV(), bindings): (Value, List[Binding]))((cum, x) => interp(x, cum._2, moveData))
     case ClosureC(e) => (interp(e, bindings, moveData)._1, bindings)
+    case IfC(b, t, f) =>
+      val (bv, bindings2) = interp(b, bindings, moveData)
+      bv match {
+        case BoolV(true) => interp(t, bindings2, moveData)
+        case BoolV(false) => interp(f, bindings2, moveData)
+        case _ => throw new RuntimeException("Non-boolean value found in if statement!")
+      }
+    case RepeatC(minAmount, maxAmount, expr) => {
+      val times = ThreadLocalRandom.current().nextInt(minAmount, maxAmount + 1)
+      (NullV(), List.fill(times)(expr).foldLeft(bindings)((cum, x) => interp(x, cum, moveData)._2))
+    }
+
+    // Interactive Elements //
     case m@MetaC(_, _) => interpMeta(m, bindings, moveData)
     case a@ActionC(_, _) => interpAction(a, bindings, moveData)
     case TriggerC(name, value) if ScriptSpecs.moveTriggers.contains(name) =>
@@ -87,7 +100,6 @@ object Interpreter {
       (NullV(), bindings)
     case RandomC(chance, expr) =>
       if (ThreadLocalRandom.current().nextInt(100) < chance) {
-        println(expr)
         val (_, newBindings) = interp(expr, bindings, moveData)
         (BoolV(true), newBindings)
       } else {

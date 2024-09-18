@@ -29,7 +29,7 @@ package object ScriptSpecs {
     ("ranged", MoveStyle.Ranged),
     ("special", MoveStyle.Special),
   )
-  final val keywords: Set[String] = Set("var", "true", "false", "if", "else", "then", "end", "action", "trigger", "meta", "random")
+  final val keywords: Set[String] = Set("var", "true", "false", "if", "else", "then", "end", "action", "trigger", "meta", "random", "repeat")
     .concat(elementalTypes.keys)
     .concat(moveStyles.keys)
     //.concat(moveTriggers.keys)
