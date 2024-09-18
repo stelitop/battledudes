@@ -1,0 +1,10 @@
+meta name = "Jail";
+meta text = "Give the enemy Trapped for 4 turns.";
+meta element = neutral;
+meta style = special;
+meta accuracy = 100;
+meta charges = 5;
+
+trigger onUse += {
+    action applyStatusOpponent ("Trapped", 4);
+};

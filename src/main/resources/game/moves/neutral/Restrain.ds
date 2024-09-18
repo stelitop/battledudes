@@ -1,0 +1,11 @@
+meta name = "Restrain";
+meta text = "Lower the enemy's speed and attack by 1 tier.";
+meta element = neutral;
+meta style = melee;
+meta accuracy = 80;
+meta charges = 20;
+
+trigger onUse += {
+    action changeSpeedOpponent 0-1;
+	action changeOffenseOpponent 0-1;
+};

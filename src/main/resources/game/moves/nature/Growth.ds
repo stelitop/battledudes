@@ -1,0 +1,12 @@
+meta name = "Growth";
+meta text = "Raise your speed, attack, and defense by 1 tier.";
+meta element = nature;
+meta style = special;
+meta accuracy = 80;
+meta charges = 20;
+
+trigger onUse += {
+	action changeSpeedSelf 1;
+	action changeOffenseSelf 1;
+	action changeDefenseSelf 1;
+};

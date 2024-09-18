@@ -1,0 +1,13 @@
+meta name = "Earthquake";
+meta text = "Deal 60 damage, then deal 40 damage, then deal 20 damage. Gain Exhausted for 2 turns.";
+meta element = earth;
+meta style = special;
+meta accuracy = 90;
+meta charges = 5;
+
+trigger onUse += {
+    action damage 60;
+	action damage 40;
+	action damage 20;
+	action applyStatusSelf ("Exhausted", 2);
+};

@@ -1,0 +1,10 @@
+meta name = "Silk Shot";
+meta text = "Lower the enemy's speed by 2 tiers.";
+meta element = nature;
+meta style = ranged;
+meta accuracy = 100;
+meta charges = 20;
+
+trigger onUse += {
+	action changeSpeedOpponent 0-2;
+};

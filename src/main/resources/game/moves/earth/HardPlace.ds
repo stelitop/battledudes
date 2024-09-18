@@ -1,0 +1,10 @@
+meta name = "Hard Place";
+meta text = "Raise your defense by 2 tiers.";
+meta element = earth;
+meta style = special;
+meta accuracy = 100;
+meta charges = 20;
+
+trigger onUse += {
+	action changeDefenseSelf 2;
+};

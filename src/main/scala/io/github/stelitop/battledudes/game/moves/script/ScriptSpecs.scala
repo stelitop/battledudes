@@ -45,6 +45,9 @@ package object ScriptSpecs {
     ("blinded", StatusEffect.Blinded),
     ("accurate", StatusEffect.Accurate),
     ("evasive", StatusEffect.Evasive),
+	("sleeping", StatusEffect.Sleeping),
+	("frozen", StatusEffect.Frozen),
+	("paralyzed", StatusEffect.Paralyzed),
   )
 }
 

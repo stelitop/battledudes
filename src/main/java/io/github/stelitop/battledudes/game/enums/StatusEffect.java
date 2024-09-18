@@ -11,4 +11,7 @@ public enum StatusEffect {
     Blinded,
     Accurate,
     Evasive,
+	Sleeping,
+	Frozen,
+	Paralyzed,
 }
