@@ -1,0 +1,10 @@
+meta name = "Accelerate";
+meta text = "Raise your speed by 2 tiers.";
+meta element = air;
+meta style = special;
+meta accuracy = 100;
+meta charges = 20;
+
+trigger onUse += {
+	action changeSpeedSelf 2;
+};

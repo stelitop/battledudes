@@ -1,0 +1,10 @@
+meta name = "Lullaby";
+meta text = "Give the enemy Sleeping.";
+meta element = magic;
+meta style = special;
+meta accuracy = 75;
+meta charges = 20;
+
+trigger onUse += {
+	action applyStatusOpponent "Sleeping";
+};

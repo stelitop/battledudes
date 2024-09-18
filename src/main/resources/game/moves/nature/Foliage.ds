@@ -1,0 +1,10 @@
+meta name = "Foliage";
+meta text = "Gain Evasive for 3 turns.";
+meta element = nature;
+meta style = special;
+meta accuracy = 100;
+meta charges = 10;
+
+trigger onUse += {
+	action applyStatusSelf ("Evasive", 3);
+};

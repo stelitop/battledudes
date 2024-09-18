@@ -1,0 +1,11 @@
+meta name = "Venomous Bite";
+meta text = "Deal 60 damage. 25% chance to inflict Poisoned.";
+meta element = decay;
+meta style = melee;
+meta accuracy = 100;
+meta charges = 20;
+
+trigger onUse += {
+    action damage (60);
+    random 25 (action applyStatusOpponent "Poisoned");
+};

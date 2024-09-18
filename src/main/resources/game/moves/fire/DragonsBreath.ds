@@ -1,0 +1,11 @@
+meta name = "Dragon's Breath";
+meta text = "Deal 120 damage. 50% chance to inflict Burning.";
+meta element = fire;
+meta style = ranged;
+meta accuracy = 90;
+meta charges = 5;
+
+trigger onUse += {
+    action damage (120);
+    random 50 {action applyStatusOpponent ("Burning")};
+};
