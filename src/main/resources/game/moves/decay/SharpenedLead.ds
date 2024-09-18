@@ -1,0 +1,12 @@
+meta name = "Sharpened Lead";
+meta text = "Deal 40 damage. 20% chance to inflict Poisoned. 20% chance to raise your attack by 1 tier.";
+meta element = decay;
+meta style = melee;
+meta accuracy = 100;
+meta charges = 20;
+
+trigger onUse += {
+    action damage (40);
+    random 20 (action applyStatusOpponent "Poisoned");
+	random 20 (action changeOffenseSelf 1);
+};

@@ -1,5 +1,6 @@
 package io.github.stelitop.battledudes.game.battles;
 
+import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.enums.ElementalType;
 import io.github.stelitop.battledudes.game.enums.MoveStyle;
 import io.github.stelitop.battledudes.game.moves.script.desugarer.NullC;
@@ -53,6 +54,7 @@ class MoveScriptServiceTest {
     @Test
     void verifyAllDudeScriptFilesCanBeLoaded() throws URISyntaxException {
         List<String> wrongMsgs = new ArrayList<>();
+        BattleActions ba = new EmptyBattleActions();
         for (String el : List.of("neutral", "fire", "water", "earth", "air", "magic", "decay", "nature", "tech")) {
             File[] files = new File(this.getClass().getClassLoader().getResource("./game/moves/" + el).toURI()).listFiles();
             String incorrectDudeScripts = Arrays.stream(files)
@@ -60,7 +62,18 @@ class MoveScriptServiceTest {
                     .map(x -> {
                         try {
                             String code = FileUtils.readFileToString(x, "utf-8");
-                            mss.createMove(code);
+                            var move = mss.createMove(code);
+                            Player p1 = new Player();
+                            Player p2 = new Player();
+                            BattleDude d1 = BattleDude.empty();
+                            BattleDude d2 = BattleDude.empty();
+                            d1.getMoves().add(move);
+                            p1.getDudes().add(d1);
+                            p2.getDudes().add(d2);
+                            p1.selectDude(0);
+                            p1.selectMove(0);
+                            Battle battle = new Battle(p1, p2, ba);
+                            move.use(battle, p1, p2, ba);
                             return "";
                         } catch (Exception e) {
                             return "- " + x.getName() + ": " + e.getMessage();

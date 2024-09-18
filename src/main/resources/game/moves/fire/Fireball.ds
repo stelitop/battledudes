@@ -7,5 +7,5 @@ meta charges = 20;
 
 trigger onUse += {
     action damage (60);
-    action applyStatusOpponent (25, "Burning", 1000);
+    random 25 {action applyStatusOpponent ("Burning")};
 };

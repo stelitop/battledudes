@@ -76,6 +76,9 @@ public class BattleDude {
      */
     private Map<StatusEffect, Integer> statusEffects;
 
+    private BattleDude() {
+
+    }
 
     /**
      * Creates a fight dude instance from the data of a dude from the database.
@@ -95,6 +98,23 @@ public class BattleDude {
         //this.moves = new ArrayList<>(dbDude.getMoves().stream().map(BattleMove::new).toList());
         this.moves = new ArrayList<>();
         this.statusEffects = new HashMap<>();
+    }
+
+    public static BattleDude empty() {
+        BattleDude dude = new BattleDude();
+        dude.name = "";
+        dude.maxHealth = dude.health = 100;
+        dude.offense = 0;
+        dude.defense = 0;
+        dude.speed = 0;
+        dude.stage = 1;
+        dude.artLink = "";
+        dude.types = new ArrayList<>();
+        dude.item = null;
+        //dude.moves = new ArrayList<>(dbDude.getMoves().stream().map(BattleMove::new).toList());
+        dude.moves = new ArrayList<>();
+        dude.statusEffects = new HashMap<>();
+        return dude;
     }
 
     public boolean isAlive() {

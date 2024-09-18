@@ -4,7 +4,8 @@ import io.github.stelitop.battledudes.game.battles._
 import io.github.stelitop.battledudes.game.moves.script.ScriptSpecs
 import io.github.stelitop.battledudes.game.moves.script.desugarer._
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadLocalRandom
+import scala.annotation.tailrec;
 
 object Interpreter {
 
@@ -85,9 +86,7 @@ object Interpreter {
       moveData.move.addTrigger(ScriptSpecs.moveTriggers(name), value)
       (NullV(), bindings)
     case RandomC(chance, expr) =>
-      val x = ThreadLocalRandom.current().nextInt(100)
-      println(x)
-      if (x < chance) {
+      if (ThreadLocalRandom.current().nextInt(100) < chance) {
         println(expr)
         val (_, newBindings) = interp(expr, bindings, moveData)
         (BoolV(true), newBindings)
@@ -104,9 +103,36 @@ object Interpreter {
       case ("damage", NumberV(x)) =>
         val realDmg = moveData.battleActions.dealDamage(moveData.battle, moveData.dude, moveData.target, x, moveData.move.getElementalType)
         (NumberV(realDmg), bindings2)
+      case ("applyStatusSelf", TupleV(StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatusSelf(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
+        (NumberV(newStatus), bindings2)
+      case ("applyStatusSelf", StringV(status)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatusSelf(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), 1000) // infinite turns
+        (NumberV(newStatus), bindings2)
       case ("applyStatusOpponent", TupleV(StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
         val newStatus = moveData.battleActions.applyStatusOpponent(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
         (NumberV(newStatus), bindings2)
+      case ("applyStatusOpponent", StringV(status)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatusOpponent(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), 1000) // infinite turns
+        (NumberV(newStatus), bindings2)
+      case ("changeOffenseSelf", NumberV(amount))  =>
+        val newAmount = moveData.battleActions.changeOffenseSelf(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
+      case ("changeOffenseOpponent", NumberV(amount)) =>
+        val newAmount = moveData.battleActions.changeOffenseOpponent(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
+      case ("changeDefenseSelf", NumberV(amount)) =>
+        val newAmount = moveData.battleActions.changeDefenseSelf(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
+      case ("changeDefenseOpponent", NumberV(amount)) =>
+        val newAmount = moveData.battleActions.changeDefenseOpponent(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
+      case ("changeSpeedSelf", NumberV(amount)) =>
+        val newAmount = moveData.battleActions.changeSpeedSelf(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
+      case ("changeSpeedOpponent", NumberV(amount)) =>
+        val newAmount = moveData.battleActions.changeSpeedOpponent(moveData.battle, moveData.dude, moveData.target, amount)
+        (NumberV(newAmount), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for action \"${a.name}\"")
     }
   }
@@ -136,6 +162,7 @@ object Interpreter {
     }
   }
 
+  @tailrec
   private def getBinding(name: String, bindings: List[Binding]): Value = bindings match {
     case Nil => throw new RuntimeException(s"Unbinded variable \"${name}\"!")
     case (n, v) :: _ if (n == name) => v
