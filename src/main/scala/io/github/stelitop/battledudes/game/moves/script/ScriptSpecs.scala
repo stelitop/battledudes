@@ -10,45 +10,17 @@ package object ScriptSpecs {
   final val specialChars: Set[Char] = Set('(', ')', '.', ',', ';', '{', '}')
   final val arithOps: Set[String] = Set("+", "-", "*", "/")
   final val boolOps: Set[String] = Set("<", "<=", ">=", ">", "==", "!=", "&&", "||")
-  final val elementalTypes: Map[String, ElementalType] = Map(
-    ("neutral", ElementalType.Neutral),
-    ("fire", ElementalType.Fire),
-    ("water", ElementalType.Water),
-    ("earth", ElementalType.Earth),
-    ("air", ElementalType.Air),
-    ("magic", ElementalType.Magic),
-    ("nature", ElementalType.Nature),
-    ("tech", ElementalType.Tech),
-    ("decay", ElementalType.Decay),
-  )
+  final val elementalTypes: Map[String, ElementalType] = ElementalType.values().toList.map(x => (x.toString.toLowerCase, x)).toMap
   final val moveTriggers: Map[String, MoveTrigger] = Map(
     ("onUse", MoveTrigger.OnUse),
   )
-  final val moveStyles: Map[String, MoveStyle] = Map(
-    ("melee", MoveStyle.Melee),
-    ("ranged", MoveStyle.Ranged),
-    ("special", MoveStyle.Special),
-  )
+  final val moveStyles: Map[String, MoveStyle] = MoveStyle.values().toList.map(x => (x.toString.toLowerCase, x)).toMap
   final val keywords: Set[String] = Set("var", "true", "false", "if", "else", "then", "end", "action", "trigger", "meta", "random", "repeat")
     .concat(elementalTypes.keys)
     .concat(moveStyles.keys)
     //.concat(moveTriggers.keys)
 
-  final val statusEffects: Map[String, StatusEffect] = Map(
-    ("burning", StatusEffect.Burning),
-    ("perishing", StatusEffect.Perishing),
-    ("trapped", StatusEffect.Trapped),
-    ("exhausted", StatusEffect.Exhausted),
-    ("poisoned", StatusEffect.Poisoned),
-    ("sheltered", StatusEffect.Sheltered),
-    ("marked", StatusEffect.Marked),
-    ("blinded", StatusEffect.Blinded),
-    ("accurate", StatusEffect.Accurate),
-    ("evasive", StatusEffect.Evasive),
-	("sleeping", StatusEffect.Sleeping),
-	("frozen", StatusEffect.Frozen),
-	("paralyzed", StatusEffect.Paralyzed),
-  )
+  final val statusEffects: Map[String, StatusEffect] = StatusEffect.values().toList.map(x => (x.toString.toLowerCase, x)).toMap
 }
 
 
