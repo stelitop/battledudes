@@ -4,8 +4,9 @@ meta element = fire;
 meta style = ranged;
 meta accuracy = 100;
 meta charges = 20;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action damage (60);
-    random 25 {action applyStatusOpponent ("Burning")};
+    action damage (target, 60);
+    random 25 {action applyStatus (target, "Burning")};
 };

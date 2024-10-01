@@ -4,10 +4,11 @@ meta element = earth;
 meta style = special;
 meta accuracy = 90;
 meta charges = 5;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action damage 60;
-	action damage 40;
-	action damage 20;
-	action applyStatusSelf ("Exhausted", 2);
+    action damage (target, 60);
+    action damage (target, 40);
+    action damage (target, 20);
+	action applyStatus (user, "Exhausted", 2);
 };

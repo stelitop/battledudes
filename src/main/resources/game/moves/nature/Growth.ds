@@ -6,7 +6,7 @@ meta accuracy = 80;
 meta charges = 20;
 
 trigger onUse += {
-	action changeSpeedSelf 1;
-	action changeOffenseSelf 1;
-	action changeDefenseSelf 1;
+	action changeSpeed (user, 1);
+	action changeOffense (user, 1);
+	action changeDefense (user, 1);
 };

@@ -4,7 +4,8 @@ meta element = neutral;
 meta style = special;
 meta accuracy = 100;
 meta charges = 5;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action applyStatusOpponent ("Trapped", 4);
+    action applyStatus (target, "Trapped", 4);
 };

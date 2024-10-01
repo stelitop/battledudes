@@ -4,9 +4,10 @@ meta element = earth;
 meta style = ranged;
 meta accuracy = 100;
 meta charges = 20;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action damage 30;
-	action damage 20;
-	action damage 10;
+    action damage (target, 30);
+    action damage (target, 20);
+    action damage (target, 10);
 };

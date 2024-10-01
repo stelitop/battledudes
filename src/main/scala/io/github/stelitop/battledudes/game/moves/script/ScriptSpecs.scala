@@ -1,6 +1,6 @@
 package io.github.stelitop.battledudes.game.moves.script
 
-import io.github.stelitop.battledudes.game.enums.{ElementalType, MoveStyle, StatusEffect}
+import io.github.stelitop.battledudes.game.enums.{ElementalType, MoveStyle, StatusEffect, TargetType}
 import io.github.stelitop.battledudes.game.battles.MoveTrigger
 
 package object ScriptSpecs {
@@ -20,7 +20,8 @@ package object ScriptSpecs {
     .concat(moveStyles.keys)
     //.concat(moveTriggers.keys)
 
-  final val statusEffects: Map[String, StatusEffect] = StatusEffect.values().toList.map(x => (x.toString.toLowerCase, x)).toMap
+  final val statusEffects: Map[String, StatusEffect] = StatusEffect.values().map(x => (x.toString.toLowerCase, x)).toMap
+  final val targetTypes: Map[String, TargetType] = TargetType.values().map(x => (x.toString, x)).toMap
 }
 
 

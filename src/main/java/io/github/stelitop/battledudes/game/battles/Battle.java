@@ -18,10 +18,11 @@ public class Battle {
     public void executeMoves() {
         if (player1.getSelectedMove() == null || player2.getSelectedDude() == null) return;
         var orderedPlayers = getPlayerOrder();
+        // TODO: Change it so that moves accept a target
         Player fst = orderedPlayers.getLeft(), snd = orderedPlayers.getRight();
-        fst.getSelectedMove().use(this, fst, snd, ba);
+        fst.getSelectedMove().use(this, fst, snd, ba, null);
         if (!fst.getSelectedDude().isAlive() || !snd.getSelectedDude().isAlive()) return;
-        snd.getSelectedMove().use(this, snd, fst, ba);
+        snd.getSelectedMove().use(this, snd, fst, ba, null);
     }
 
     private Pair<Player, Player> getPlayerOrder() {

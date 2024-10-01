@@ -4,8 +4,9 @@ meta element = neutral;
 meta style = melee;
 meta accuracy = 80;
 meta charges = 20;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action changeSpeedOpponent 0-1;
-	action changeOffenseOpponent 0-1;
+    action changeSpeed (target, 0-1);
+	action changeOffense (target, 0-1);
 };

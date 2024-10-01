@@ -2,8 +2,9 @@ package io.github.stelitop.battledudes.game.battles;
 
 import io.github.stelitop.battledudes.game.enums.ElementalType;
 import io.github.stelitop.battledudes.game.enums.MoveStyle;
+import io.github.stelitop.battledudes.game.enums.TargetType;
 import io.github.stelitop.battledudes.game.moves.script.desugarer.NullC;
-import io.github.stelitop.battledudes.game.moves.script.interpreter.Interpreter;
+import io.github.stelitop.battledudes.game.moves.script.interpreter.*;
 import io.github.stelitop.battledudes.game.moves.script.desugarer.ExprC;
 
 import java.util.HashMap;
@@ -19,23 +20,36 @@ public class BattleMove {
     private MoveStyle moveStyle = MoveStyle.Melee;
     private int charges = 100;
     private int accuracy = 100;
+    private TargetType targetType = TargetType.None;
 
     public BattleMove() {
 
     }
 
-    public void use(Battle battle, Player user, Player opponent, BattleActions ba) {
+    public void use(Battle battle, Player user, Player opponent, BattleActions ba, Object target) {
         var code = getTrigger(MoveTrigger.OnUse);
         Interpreter.MoveData moveData = new Interpreter.MoveData(
                 this,
                 battle,
                 user,
                 opponent,
-                user.getSelectedDude(),
-                opponent.getSelectedDude(),
+                new DudeRefV(user.getSelectedDude()),
+                transformObjectToValue(target),
                 ba
         );
         Interpreter.interpNew(code, moveData);
+    }
+
+    // TODO: Move this to a more general place, e.g. some utils class
+    public Value transformObjectToValue(Object o) {
+        if (o == null) return new NullV();
+        if (o instanceof Integer n) return new NumberV(n);
+        if (o instanceof String s) return new StringV(s);
+        if (o instanceof Boolean b) return new BoolV(b);
+        if (o instanceof ElementalType et) return new ElementalTypeV(et);
+        if (o instanceof MoveStyle st) return new MoveStyleV(st);
+        if (o instanceof BattleDude bd) return new DudeRefV(bd);
+        throw new RuntimeException("Could not transform object " + o + " into a DudeScript value!");
     }
 
     public ExprC getScript() {
@@ -92,6 +106,14 @@ public class BattleMove {
 
     public void setAccuracy(int accuracy) {
         this.accuracy = accuracy;
+    }
+
+    public TargetType getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(TargetType targetType) {
+        this.targetType = targetType;
     }
 
     public void addTrigger(MoveTrigger trigger, ExprC expr) {

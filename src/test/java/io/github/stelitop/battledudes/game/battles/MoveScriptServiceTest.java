@@ -3,6 +3,7 @@ package io.github.stelitop.battledudes.game.battles;
 import io.github.stelitop.battledudes.game.entities.Dude;
 import io.github.stelitop.battledudes.game.enums.ElementalType;
 import io.github.stelitop.battledudes.game.enums.MoveStyle;
+import io.github.stelitop.battledudes.game.enums.TargetType;
 import io.github.stelitop.battledudes.game.moves.script.desugarer.NullC;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,15 @@ class MoveScriptServiceTest {
         assertThat(move.getTrigger(MoveTrigger.OnUse)).isNotOfAnyClassIn(NullC.class);
     }
 
+    private Object emptyTargetValue(TargetType type, BattleDude self, BattleDude opponent) {
+        return switch (type) {
+            case None -> null;
+            case EnemyBattlefieldDude -> opponent;
+            default -> throw new RuntimeException("Target type " + type + " does not have a placeholder value!");
+        };
+    }
+
+
     @Test
     void verifyAllDudeScriptFilesCanBeLoaded() throws URISyntaxException {
         List<String> wrongMsgs = new ArrayList<>();
@@ -73,7 +83,8 @@ class MoveScriptServiceTest {
                             p1.selectDude(0);
                             p1.selectMove(0);
                             Battle battle = new Battle(p1, p2, ba);
-                            move.use(battle, p1, p2, ba);
+                            Object target = emptyTargetValue(move.getTargetType(), d1, d2);
+                            move.use(battle, p1, p2, ba, target);
                             return "";
                         } catch (Exception e) {
                             return "- " + x.getName() + ": " + e.getMessage();

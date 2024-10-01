@@ -4,8 +4,9 @@ meta element = decay;
 meta style = melee;
 meta accuracy = 100;
 meta charges = 20;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action damage (60);
-    random 25 (action applyStatusOpponent "Poisoned");
+    action damage (target, 60);
+    random 25 (action applyStatusOpponent (target, "Poisoned"));
 };

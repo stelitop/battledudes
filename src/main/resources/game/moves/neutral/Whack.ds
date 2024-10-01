@@ -4,7 +4,8 @@ meta element = neutral;
 meta style = melee;
 meta accuracy = 100;
 meta charges = 40;
+meta target = "EnemyBattlefieldDude";
 
 trigger onUse += {
-    action damage (40);
+    action damage (target, 40);
 };

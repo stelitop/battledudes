@@ -15,12 +15,13 @@ object Interpreter {
       battle: Battle,
       player: Player,
       opponent: Player,
-      dude: BattleDude,
-      target: BattleDude,
+      user: DudeRefV,
+      target: Value,
       battleActions: BattleActions,
   )
 
-  def interpNew(expr: ExprC, moveData: MoveData) = interp(expr, Nil, moveData)
+  def interpNew(expr: ExprC, moveData: MoveData): (Value, List[Binding]) =
+    interp(expr, List(("target", moveData.target), ("user", moveData.user)), moveData)
   def interp(expr: ExprC, bindings: List[Binding], moveData: MoveData): (Value, List[Binding]) = expr match {
     // Constant Values //
     case NullC() => (NullV(), bindings)
@@ -112,38 +113,23 @@ object Interpreter {
   private def interpAction(a: ActionC, bindings: List[Binding], moveData: MoveData): (Value, List[Binding]) = {
     val (v, bindings2) = interp(a.expr, bindings, moveData)
     (a.name, v) match {
-      case ("damage", NumberV(x)) =>
-        val realDmg = moveData.battleActions.dealDamage(moveData.battle, moveData.dude, moveData.target, x, moveData.move.getElementalType)
+      case ("damage", TupleV(DudeRefV(target) :: NumberV(x) :: Nil)) =>
+        val realDmg = moveData.battleActions.dealDamage(moveData.battle, moveData.user.dudeRef, target, x, moveData.move.getElementalType)
         (NumberV(realDmg), bindings2)
-      case ("applyStatusSelf", TupleV(StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
-        val newStatus = moveData.battleActions.applyStatusSelf(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
+      case ("applyStatus", TupleV(DudeRefV(target) :: StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatus(moveData.battle, moveData.user.dudeRef, target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
         (NumberV(newStatus), bindings2)
-      case ("applyStatusSelf", StringV(status)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
-        val newStatus = moveData.battleActions.applyStatusSelf(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), 1000) // infinite turns
+      case ("applyStatus", TupleV(DudeRefV(target) :: StringV(status) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
+        val newStatus = moveData.battleActions.applyStatus(moveData.battle, moveData.user.dudeRef, target, ScriptSpecs.statusEffects(status.toLowerCase), 1000)
         (NumberV(newStatus), bindings2)
-      case ("applyStatusOpponent", TupleV(StringV(status) :: NumberV(amount) :: Nil)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
-        val newStatus = moveData.battleActions.applyStatusOpponent(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), amount)
-        (NumberV(newStatus), bindings2)
-      case ("applyStatusOpponent", StringV(status)) if ScriptSpecs.statusEffects.contains(status.toLowerCase) =>
-        val newStatus = moveData.battleActions.applyStatusOpponent(moveData.battle, moveData.dude, moveData.target, ScriptSpecs.statusEffects(status.toLowerCase), 1000) // infinite turns
-        (NumberV(newStatus), bindings2)
-      case ("changeOffenseSelf", NumberV(amount))  =>
-        val newAmount = moveData.battleActions.changeOffenseSelf(moveData.battle, moveData.dude, moveData.target, amount)
+      case ("changeOffense", TupleV(DudeRefV(target) :: NumberV(amount) :: Nil))  =>
+        val newAmount = moveData.battleActions.changeOffense(moveData.battle, moveData.user.dudeRef, target, amount)
         (NumberV(newAmount), bindings2)
-      case ("changeOffenseOpponent", NumberV(amount)) =>
-        val newAmount = moveData.battleActions.changeOffenseOpponent(moveData.battle, moveData.dude, moveData.target, amount)
+      case ("changeDefense", TupleV(DudeRefV(target) :: NumberV(amount) :: Nil)) =>
+        val newAmount = moveData.battleActions.changeDefense(moveData.battle, moveData.user.dudeRef, target, amount)
         (NumberV(newAmount), bindings2)
-      case ("changeDefenseSelf", NumberV(amount)) =>
-        val newAmount = moveData.battleActions.changeDefenseSelf(moveData.battle, moveData.dude, moveData.target, amount)
-        (NumberV(newAmount), bindings2)
-      case ("changeDefenseOpponent", NumberV(amount)) =>
-        val newAmount = moveData.battleActions.changeDefenseOpponent(moveData.battle, moveData.dude, moveData.target, amount)
-        (NumberV(newAmount), bindings2)
-      case ("changeSpeedSelf", NumberV(amount)) =>
-        val newAmount = moveData.battleActions.changeSpeedSelf(moveData.battle, moveData.dude, moveData.target, amount)
-        (NumberV(newAmount), bindings2)
-      case ("changeSpeedOpponent", NumberV(amount)) =>
-        val newAmount = moveData.battleActions.changeSpeedOpponent(moveData.battle, moveData.dude, moveData.target, amount)
+      case ("changeSpeed", TupleV(DudeRefV(target) :: NumberV(amount) :: Nil)) =>
+        val newAmount = moveData.battleActions.changeSpeed(moveData.battle, moveData.user.dudeRef, target, amount)
         (NumberV(newAmount), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for action \"${a.name}\"")
     }
@@ -169,6 +155,9 @@ object Interpreter {
         (NullV(), bindings2)
       case ("style", MoveStyleV(st)) =>
         moveData.move.setMoveStyle(st)
+        (NullV(), bindings2)
+      case ("target", StringV(t)) if ScriptSpecs.targetTypes.contains(t) =>
+        moveData.move.setTargetType(ScriptSpecs.targetTypes(t));
         (NullV(), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for meta \"${m.name}\"")
     }
