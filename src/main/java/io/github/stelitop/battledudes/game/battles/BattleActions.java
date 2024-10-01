@@ -36,4 +36,10 @@ public class BattleActions {
         if (target.getSpeed() < -6) target.setSpeed(-6);
         return target.getSpeed();
     }
+
+    public int heal(Battle battle, BattleDude user, BattleDude target, int amount) {
+        int actualHeal = Math.min(amount, target.getMaxHealth() - target.getHealth());
+        target.setHealth(target.getHealth() + actualHeal);
+        return actualHeal;
+    }
 }

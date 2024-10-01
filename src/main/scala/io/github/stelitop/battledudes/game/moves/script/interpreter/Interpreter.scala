@@ -131,6 +131,9 @@ object Interpreter {
       case ("changeSpeed", TupleV(DudeRefV(target) :: NumberV(amount) :: Nil)) =>
         val newAmount = moveData.battleActions.changeSpeed(moveData.battle, moveData.user.dudeRef, target, amount)
         (NumberV(newAmount), bindings2)
+      case ("heal", TupleV(DudeRefV(target) :: NumberV(amount) :: Nil)) =>
+        val actualHealed = moveData.battleActions.heal(moveData.battle, moveData.user.dudeRef, target, amount)
+        (NumberV(actualHealed), bindings2)
       case _ => throw new RuntimeException(s"Incorrect value type for action \"${a.name}\"")
     }
   }
