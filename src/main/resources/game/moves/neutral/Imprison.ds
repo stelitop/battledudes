@@ -1,4 +1,4 @@
-meta name = "Jail";
+meta name = "Imprison";
 meta text = "Give the enemy Trapped for 4 turns.";
 meta element = neutral;
 meta style = special;
