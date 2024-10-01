@@ -15,16 +15,45 @@ public class Battle {
         this.ba = ba;
     }
 
-    public void executeMoves() {
+    public void executeMoves(Object targetP1, Object targetP2) {
         if (player1.getSelectedMove() == null || player2.getSelectedDude() == null) return;
-        var orderedPlayers = getPlayerOrder();
-        // TODO: Change it so that moves accept a target
-        Player fst = orderedPlayers.getLeft(), snd = orderedPlayers.getRight();
-        fst.getSelectedMove().use(this, fst, snd, ba, null);
+        Player fst, snd;
+        Object targetFst, targetSnd;
+        if (!swapPlayers()) {
+            fst = player1;
+            snd = player2;
+            targetFst = targetP1;
+            targetSnd = targetP2;
+        } else {
+            fst = player2;
+            snd = player1;
+            targetFst = targetP2;
+            targetSnd = targetP1;
+        }
+        fst.getSelectedMove().use(this, fst, snd, ba, targetFst);
         if (!fst.getSelectedDude().isAlive() || !snd.getSelectedDude().isAlive()) return;
-        snd.getSelectedMove().use(this, snd, fst, ba, null);
+        snd.getSelectedMove().use(this, snd, fst, ba, targetSnd);
     }
 
+    /**
+     *
+     * @return True if player2 should go first, false if player1 should go first.
+     */
+    private boolean swapPlayers() {
+        if (player1.getSelectedDude().getSpeed() == player2.getSelectedDude().getSpeed()) {
+            if (ThreadLocalRandom.current().nextBoolean()) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (player1.getSelectedDude().getSpeed() > player2.getSelectedDude().getSpeed()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
     private Pair<Player, Player> getPlayerOrder() {
         if (player1.getSelectedDude().getSpeed() == player2.getSelectedDude().getSpeed()) {
             if (ThreadLocalRandom.current().nextBoolean()) {

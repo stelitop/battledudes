@@ -26,8 +26,8 @@ class BattleTest {
     @Test
     void testBasicDamageMoves() {
         MoveScriptService mss = new MoveScriptService();
-        BattleMove moveP1 = mss.createMove("trigger onUse += {action damage 25;};");
-        BattleMove moveP2 = mss.createMove("trigger onUse += {action damage 40;};");
+        BattleMove moveP1 = mss.createMove("meta target = \"EnemyBattlefieldDude\"; trigger onUse += {action damage (target, 25);};");
+        BattleMove moveP2 = mss.createMove("meta target = \"EnemyBattlefieldDude\"; trigger onUse += {action damage (target, 40);};");
 
         BattleDude testDudeP1 = new BattleDude(Dude.builder()
                 .name("Test Dude P1")
@@ -61,7 +61,7 @@ class BattleTest {
         p2.selectDude(0);
         p2.selectMove(0);
         Battle battle = new Battle(p1, p2, new BattleActions());
-        battle.executeMoves();
+        battle.executeMoves(testDudeP2, testDudeP1);
         assertThat(p1.getSelectedDude().getHealth()).isEqualTo(60);
         assertThat(p2.getSelectedDude().getHealth()).isEqualTo(75);
     }
@@ -69,7 +69,7 @@ class BattleTest {
     @Test
     void testStatusMove() {
         MoveScriptService mss = new MoveScriptService();
-        BattleMove moveP1 = mss.createMove("trigger onUse += {action applyStatusOpponent (\"trapped\", 4);};");
+        BattleMove moveP1 = mss.createMove("meta target = \"EnemyBattlefieldDude\"; trigger onUse += {action applyStatus (target, \"trapped\", 4);};");
         BattleMove moveP2 = mss.createMove("trigger onUse += {};");
 
         BattleDude testDudeP1 = new BattleDude(Dude.builder()
@@ -104,7 +104,7 @@ class BattleTest {
         p2.selectDude(0);
         p2.selectMove(0);
         Battle battle = new Battle(p1, p2, new BattleActions());
-        battle.executeMoves();
+        battle.executeMoves(testDudeP2, null);
         assertThat(p2.getSelectedDude().getStatusEffects()).containsEntry(StatusEffect.Trapped, 4);
     }
 }
