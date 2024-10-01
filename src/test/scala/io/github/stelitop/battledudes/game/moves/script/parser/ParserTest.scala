@@ -9,7 +9,7 @@ class ParserTest {
   def testOneIsPositive(): Unit = {
     val code = "{a = 5; true}"
     println(code)
-    val tokenized = Lexer.tokenize(code.toCharArray.toList)
+    val tokenized = Lexer.tokenize(code)
     println(tokenized)
     val result = Parser.parse(tokenized)
     println(result)
@@ -31,7 +31,7 @@ class ParserTest {
       };
       """
     println(code)
-    val tokenized = Lexer.tokenize(code.toCharArray.toList)
+    val tokenized = Lexer.tokenize(code)
     println(tokenized)
     val result = Parser.parse(tokenized)
     println(result)
@@ -46,7 +46,7 @@ class ParserTest {
       c = b - a;
       """
     println(code)
-    val tokenized = Lexer.tokenize(code.toCharArray.toList)
+    val tokenized = Lexer.tokenize(code)
     println(tokenized)
     val result = Parser.parse(tokenized)
     println(result)
@@ -59,7 +59,7 @@ class ParserTest {
       action params 1, 2, 3, 100;
       """
     println(code)
-    val tokenized = Lexer.tokenize(code.toCharArray.toList)
+    val tokenized = Lexer.tokenize(code)
     println(tokenized)
     val result = Parser.parse(tokenized)
     println(result)

@@ -15,7 +15,7 @@ class InterpreterTest {
       Interpreter.interp(
         Desugarer.desugar(
           Parser.parse(
-            Lexer.tokenize(code.toCharArray.toList))), List(), new MoveData(null, null, null, null, null, null, new EmptyBattleActions()))._1
+            Lexer.tokenize(code))), List(), new MoveData(null, null, null, null, null, null, new EmptyBattleActions()))._1
 
     @Test
     def interpSimpleVar(): Unit = {
@@ -65,5 +65,16 @@ class InterpreterTest {
       a
       """
     assertThat(interpCode(code)).isEqualTo(NumberV(65))
+  }
+
+  @Test
+  def interpComment(): Unit = {
+    val code =
+      """
+      a = 5; # comment one
+      b = 3; # comment two
+      a + b  # comment three!
+      """
+    assertThat(interpCode(code)).isEqualTo(NumberV(8))
   }
 }
