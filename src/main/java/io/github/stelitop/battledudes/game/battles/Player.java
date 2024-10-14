@@ -11,6 +11,7 @@ import java.util.List;
 public class Player {
 
     private long discordUserId;
+    private String name;
     /**
      * The team of dudes.
      */

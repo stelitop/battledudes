@@ -1,10 +1,12 @@
 package io.github.stelitop.battledudes.game.battles;
 
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Battle {
+    @Getter
 
     private Player player1, player2;
     private BattleActions ba;
